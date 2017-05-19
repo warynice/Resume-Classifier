@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import svm
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.naive_bayes import GaussianNB
 
 # importing all the words from the resumes into a list
 resume_list = []
@@ -18,7 +20,6 @@ for i in range(97):
     for j in range(len(doc)):
         each_resume += doc[j]
     resume_list.append(each_resume)
-print resume_list
 	
 # removing punctuations and other unnecessary characters
 for i in range(len(resume_list)):
@@ -26,12 +27,6 @@ for i in range(len(resume_list)):
     resume_list[i] = resume_list[i].translate(None, "\n")
     resume_list[i] = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f-\xff]', '', resume_list[i])
 	
-# extracting words as features from the resume list and making a feature matrix
-vectorizer = TfidfVectorizer(analyzer="word", stop_words="english", max_features=250)
-words = vectorizer.fit_transform(resume_list)
-features = words.toarray()
-print features
-
 # labelling the existing resumes as being accepted(1) or being rejected(0)
 # The first 36 resumes are labelled as accepted in this case and a label list is prepared
 label = []
@@ -42,7 +37,14 @@ for i in range(61):
 label = np.array(label)
 
 #shuffling and splitting the data into a training set and a testing set
-X_train, X_test, y_train, y_test = train_test_split(features, label, test_size=0.2, random_state=42)
+features_train, features_test, y_train, y_test = train_test_split(resume_list, label, test_size=0.33, random_state=42)
+
+# extracting words as features from the training and testing sets and making corresponding feature matrices
+vectorizer = TfidfVectorizer(analyzer="word", stop_words="english", max_features=250)
+words_train = vectorizer.fit_transform(features_train)
+X_train = words_train.toarray()
+words_test = vectorizer.fit_transform(features_test)
+X_test = words_test.toarray()
 
 # Using Decision Tree Classifier on the data
 dtclf = tree.DecisionTreeClassifier()
@@ -61,3 +63,15 @@ model_svm = svm.SVC()
 model_svm = model_svm.fit(X_train, y_train)
 print model_svm.score(X_train, y_train)
 print model_svm.score(X_test, y_test)
+
+# Using Bernoulli Naive Bayes Algorithm
+bnbclf = BernoulliNB()
+bnbclf = bnbclf.fit(X_train, y_train)
+print bnbclf.score(X_train, y_train)
+print bnbclf.score(X_test, y_test)
+
+# Using Gaussian Naive Bayes Algorithm
+gnbclf = GaussianNB()
+gnbclf = clf1.fit(X_train, y_train)
+print gnbclf.score(X_train, y_train)
+print gnbclf.score(X_test, y_test)
