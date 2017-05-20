@@ -72,7 +72,7 @@ print bnbclf.score(X_test, y_test)
 
 # Using Gaussian Naive Bayes Algorithm
 gnbclf = GaussianNB()
-gnbclf = clf1.fit(X_train, y_train)
+gnbclf = gnbclf.fit(X_train, y_train)
 print gnbclf.score(X_train, y_train)
 print gnbclf.score(X_test, y_test)
 
