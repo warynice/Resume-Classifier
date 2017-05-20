@@ -36,15 +36,15 @@ for i in range(61):
     label.append(0)
 label = np.array(label)
 
-#shuffling and splitting the data into a training set and a testing set
-features_train, features_test, y_train, y_test = train_test_split(resume_list, label, test_size=0.33, random_state=42)
+# shuffling and splitting the data into a training set and a testing set
+resumes_train, resumes_test, y_train, y_test = train_test_split(resume_list, label, test_size=0.33, random_state=42)
 
 # extracting words as features from the training and testing sets and making corresponding feature matrices
 vectorizer = TfidfVectorizer(analyzer="word", stop_words="english", max_features=250)
-words_train = vectorizer.fit_transform(features_train)
-X_train = words_train.toarray()
-words_test = vectorizer.fit_transform(features_test)
-X_test = words_test.toarray()
+features_train = vectorizer.fit_transform(resumes_train)
+X_train = features_train.toarray()
+features_test = vectorizer.fit_transform(resumes_test)
+X_test = features_test.toarray()
 
 # Using Decision Tree Classifier on the data
 dtclf = tree.DecisionTreeClassifier()
@@ -75,3 +75,11 @@ gnbclf = GaussianNB()
 gnbclf = clf1.fit(X_train, y_train)
 print gnbclf.score(X_train, y_train)
 print gnbclf.score(X_test, y_test)
+
+# Testing a sample resume of a new applicant
+# Replace "your_file_name" with the name of your resume doc and comment out the following lines of code
+# f = open("your_file_name.pdf", "rb")
+# sample_resume = slate.PDF(f)
+# sample_resume = sample_resume[0]
+# sample_resume = vectorizer.transform([sample_resume])
+# print bnbclf.predict(sample_resume)[0]
